@@ -1,0 +1,107 @@
+                                Image Upload Backend – Short Notes
+
+Technologies used in the system:
+
+Node.js – Runs JavaScript on the server
+Express.js – Framework used to create API routes
+Multer – Middleware used to handle file uploads
+ImageKit – Cloud service used to store images
+MongoDB – Database used to store post data
+
+
+1. Purpose of the System
+The system allows a user to upload an image with a caption.
+The image is stored in cloud storage instead of the server.
+Only the image URL and caption are stored in the database.
+This makes the system faster and scalable.
+
+
+2. User Request
+The user selects an image file from the browser.
+The user also enters a caption.
+The browser sends this data to the backend through an HTTP POST request.
+The request format is multipart/form-data because it contains a file.
+
+
+3. Express Server Receives Request
+The backend server built using Express.js receives the request.
+The server route is responsible for creating a post.
+Before processing the request, a middleware is used to handle the file.
+
+
+4. File Processing Using Multer
+Multer extracts the uploaded image from the request.
+The uploaded file is stored temporarily in memory (RAM).
+The file becomes available as file data inside the request object.
+This data is stored as a buffer.
+
+
+5. Buffer and Base64 Conversion
+The image stored in memory is in binary format (buffer).
+Cloud storage services usually require Base64 encoded data.
+The buffer is converted into Base64 format.
+Base64 allows binary files to be transmitted as text.
+
+
+6. Uploading Image to Cloud Storage
+The backend sends the image data to ImageKit.
+ImageKit stores the image in its cloud storage.
+The server authenticates using a private API key.
+The image is uploaded with a specified file name.
+
+
+7. ImageKit Response
+
+After uploading the image, ImageKit returns a response containing:
+
+Image metadata
+File information
+Public image URL
+
+This URL is the most important part because it allows the image to be accessed from anywhere on the internet.
+
+8. Saving Data in Database
+After receiving the image URL, the backend stores the data in MongoDB.
+A new post document is created in the database.
+Each post contains:
+Image URL
+Caption
+
+The database only stores text data, not the image itself.
+
+
+9. Success Response
+Once the post is saved in the database, the server sends a response.
+The response confirms that the post was created successfully.
+The response also returns the newly created post data.
+10. Fetching Posts
+
+The system also has another API to retrieve posts.
+
+The backend queries MongoDB.
+All stored posts are retrieved.
+The posts are sent back to the client in JSON format.
+The frontend displays the caption and loads the image using the stored URL.
+
+
+11. Why This Architecture is Used
+
+This system design has several advantages:
+
+The server does not store heavy image files.
+Images are delivered faster using a CDN.
+The database remains lightweight.
+The system can handle large numbers of users and images.
+
+
+12. Complete Flow Summary
+User uploads image and caption
+Browser sends request to backend
+Express server receives the request
+Multer extracts the image file
+Image stored temporarily in memory
+File converted to Base64
+Image uploaded to ImageKit cloud
+ImageKit returns image URL
+URL and caption stored in MongoDB
+Server sends success response
